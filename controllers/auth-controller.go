@@ -26,13 +26,16 @@ func NewAuthC(auths services.AuthS) AuthC {
 func (a *authC) Login(c *fiber.Ctx) error {
 	var loginData dto.Login
 	c.BodyParser(&loginData)
+	if err := helpers.EmptyChecker(loginData); err != nil {
+		return helpers.Response(c, 400, err, "Login gagal!", false)
+	}
 
 	user, err := a.authS.LoginUser(loginData, c.Context())
 	if err != nil {
-		return helpers.FailedResponse(c, 400, err.Error())
+		return helpers.Response(c, 400, nil, err.Error(), false)
 	}
 
-	return helpers.SuccessResponse(c, 200, "Login berhasil!", user)
+	return helpers.Response(c, 200, user, "Login berhasil!", true)
 }
 
 func (a *authC) Register(c *fiber.Ctx) error {
