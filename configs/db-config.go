@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/joho/godotenv"
@@ -30,6 +31,9 @@ func DatabaseConnection() *pgxpool.Pool {
 	}
 
 	config.MaxConns = 20
+	config.MinConns = 5
+	config.MaxConnIdleTime = 5 * time.Minute
+	config.MaxConnLifetime = 60 * time.Minute
 
 	pg, err := pgxpool.ConnectConfig(context.Background(), config)
 	if err != nil {

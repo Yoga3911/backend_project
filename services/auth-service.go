@@ -1,9 +1,16 @@
 package services
 
-import "crud/repository"
+import (
+	"crud/dto"
+	"crud/models"
+	"crud/repository"
+	"fmt"
+
+	"github.com/valyala/fasthttp"
+)
 
 type AuthS interface {
-	LoginUser()
+	LoginUser(dto.Login, *fasthttp.RequestCtx) (models.User, error)
 	RegisterUser()
 }
 
@@ -17,8 +24,13 @@ func NewAuthS(authR repository.AuthR) AuthS {
 	}
 }
 
-func (a *authS) LoginUser() {
+func (a *authS) LoginUser(loginDTO dto.Login, ctx *fasthttp.RequestCtx) (models.User, error) {
+	user, err := a.authR.CheckUsernamePassword(loginDTO, ctx)
+	if err != nil {
+		return user, fmt.Errorf("Username atau Password salah!")
+	}
 
+	return user, nil
 }
 
 func (a *authS) RegisterUser() {
