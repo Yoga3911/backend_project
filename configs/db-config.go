@@ -41,10 +41,11 @@ func DatabaseConnection() *pgxpool.Pool {
 		log.Fatal(err)
 	}
 
-	migration := "true"
-	if migration == "true" {
+	migration := 0
+	switch migration {
+	case 1:
 		Migration(pg, ctx)
-	} else if migration == "false" {
+	case 2:
 		Rollback(pg, ctx)
 	}
 

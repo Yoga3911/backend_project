@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"crud/dto"
-	"crud/utils"
 	"crud/services"
+	"crud/utils"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -27,8 +27,8 @@ func (a *authC) Login(c *fiber.Ctx) error {
 	var loginData dto.Login
 	c.BodyParser(&loginData)
 
-	if err := utils.EmptyChecker(loginData); err != nil {
-		return utils.Response(c, 400, err, "Terdapat field kosong!", false)
+	if err := utils.StructValidator(loginData); err != nil {
+		return utils.Response(c, 400, err, "Anda yang salah!", false)
 	}
 
 	user, err := a.authS.LoginUser(loginData, c.Context())
@@ -43,8 +43,8 @@ func (a *authC) Register(c *fiber.Ctx) error {
 	var registerData dto.Register
 	c.BodyParser(&registerData)
 
-	if err := utils.EmptyChecker(registerData); err != nil {
-		return utils.Response(c, 400, err, "Terdapat field kosong!", false)
+	if err := utils.StructValidator(registerData); err != nil {
+		return utils.Response(c, 400, err, "Anda yang salah!", false)
 	}
 
 	err := utils.InputChecker(registerData.Email, registerData.Password, registerData.Username, registerData.Address)
@@ -55,7 +55,7 @@ func (a *authC) Register(c *fiber.Ctx) error {
 
 	err = a.authS.RegisterUser(registerData, c.Context())
 	if err != nil {
-		return utils.Response(c, 400, err, err.Error(), false)
+		return utils.Response(c, 400, nil, err.Error(), false)
 	}
 
 	return utils.Response(c, 200, nil, "Register berhasil!", true)

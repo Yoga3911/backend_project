@@ -6,8 +6,8 @@ type Login struct {
 }
 
 type Register struct {
-	Username string `json:"username" validate:"required"`
-	Email    string `json:"email" validate:"required"`
-	Password string `json:"password" validate:"required"`
-	Address  string `json:"address" validate:"required"`
+	Username string `json:"username" validate:"required,min=6,max=50"`
+	Email    string `json:"email" validate:"required,email,min=6,max=50"`
+	Password string `json:"password" validate:"required,min=6,max=100"`
+	Address  string `json:"address" validate:"required,min=6,max=50"`
 }
