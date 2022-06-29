@@ -20,7 +20,7 @@ func DatabaseConnection() *pgxpool.Pool {
 	switch dsn {
 	case "dev":
 		dsn = fmt.Sprintf("host=%s user=%s password=%s port=%s dbname=%s sslmode=disable TimeZone=Asia/Jakarta",
-		os.Getenv("DB_HOST"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_PORT"), os.Getenv("DB_NAME"))
+			os.Getenv("DB_HOST"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_PORT"), os.Getenv("DB_NAME"))
 	case "prod":
 		dsn = os.Getenv("DATABASE_URL")
 	}
@@ -35,9 +35,17 @@ func DatabaseConnection() *pgxpool.Pool {
 	config.MaxConnIdleTime = 5 * time.Minute
 	config.MaxConnLifetime = 60 * time.Minute
 
-	pg, err := pgxpool.ConnectConfig(context.Background(), config)
+	ctx := context.Background()
+	pg, err := pgxpool.ConnectConfig(ctx, config)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	migration := "true"
+	if migration == "true" {
+		Migration(pg, ctx)
+	} else if migration == "false" {
+		Rollback(pg, ctx)
 	}
 
 	return pg
