@@ -11,7 +11,7 @@ import (
 
 type AuthR interface {
 	CheckUsernamePassword(dto.Login, *fasthttp.RequestCtx) (models.User, error)
-	InsertUser(dto.Register, *fasthttp.RequestCtx) (models.User, error)
+	InsertUser(dto.Register, *fasthttp.RequestCtx) error
 }
 
 type authR struct {
@@ -32,9 +32,8 @@ func (a *authR) CheckUsernamePassword(loginDTO dto.Login, ctx *fasthttp.RequestC
 	return user, err
 }
 
-func (a *authR) InsertUser(registerDTO dto.Register, ctx *fasthttp.RequestCtx) (models.User, error) {
-	var user models.User
+func (a *authR) InsertUser(registerDTO dto.Register, ctx *fasthttp.RequestCtx) error {
 	_, err := a.db.Exec(ctx, sql.InsertUser, registerDTO.Username, registerDTO.Email, registerDTO.Password, registerDTO.Address)
 
-	return user, err
+	return err
 }

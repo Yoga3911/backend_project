@@ -1,6 +1,8 @@
 package helpers
 
 import (
+	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/go-playground/validator/v10"
@@ -24,4 +26,20 @@ func EmptyChecker(models interface{}) []*Validator {
 	}
 
 	return errors
+}
+
+func InputChecker(data ...string) error {
+	regex, err := regexp.Compile(`([a-zA-Z1-90@. ]+)`)
+	if err != nil {
+		return fmt.Errorf("cant compile regex")
+	}
+
+	for _, item := range data {
+		result := regex.FindAllString(item, -1)
+		if item != result[0] {
+			return fmt.Errorf("Hanya boleh menggunakan simbol @ dan .")
+		}
+	}
+
+	return nil
 }

@@ -26,8 +26,9 @@ func NewAuthC(auths services.AuthS) AuthC {
 func (a *authC) Login(c *fiber.Ctx) error {
 	var loginData dto.Login
 	c.BodyParser(&loginData)
+
 	if err := helpers.EmptyChecker(loginData); err != nil {
-		return helpers.Response(c, 400, err, "Login gagal!", false)
+		return helpers.Response(c, 400, err, "Terdapat field kosong!", false)
 	}
 
 	user, err := a.authS.LoginUser(loginData, c.Context())
@@ -39,9 +40,23 @@ func (a *authC) Login(c *fiber.Ctx) error {
 }
 
 func (a *authC) Register(c *fiber.Ctx) error {
-	return c.Status(200).JSON(fiber.Map{
-		"status":  true,
-		"message": "Register berhasil!",
-		"data":    nil,
-	})
+	var registerData dto.Register
+	c.BodyParser(&registerData)
+
+	if err := helpers.EmptyChecker(registerData); err != nil {
+		return helpers.Response(c, 400, err, "Terdapat field kosong!", false)
+	}
+
+	err := helpers.InputChecker(registerData.Email, registerData.Password, registerData.Username, registerData.Address)
+	if err != nil {
+		return helpers.Response(c, 400, nil, err.Error(), false)
+
+	}
+
+	err = a.authS.RegisterUser(registerData, c.Context())
+	if err != nil {
+		return helpers.Response(c, 400, err, err.Error(), false)
+	}
+
+	return helpers.Response(c, 200, nil, "Register berhasil!", true)
 }

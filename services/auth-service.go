@@ -11,7 +11,8 @@ import (
 
 type AuthS interface {
 	LoginUser(dto.Login, *fasthttp.RequestCtx) (models.User, error)
-	RegisterUser(dto.Register, *fasthttp.RequestCtx) (models.User, error)
+	RegisterUser(dto.Register, *fasthttp.RequestCtx) error
+	
 }
 
 type authS struct {
@@ -33,20 +34,12 @@ func (a *authS) LoginUser(loginDTO dto.Login, ctx *fasthttp.RequestCtx) (models.
 	return user, nil
 }
 
-func (a *authS) RegisterUser(registerDTO dto.Register, ctx *fasthttp.RequestCtx) (models.User, error) {
-	if registerDTO.Username == "" {
-		return models.User{}, fmt.Errorf("Register gagal!")
-	}
-	
-	if registerDTO.Password == "" {
-		return models.User{}, fmt.Errorf("Register gagal!")
-	}
-
-	user, err := a.authR.InsertUser(registerDTO, ctx)
+func (a *authS) RegisterUser(registerDTO dto.Register, ctx *fasthttp.RequestCtx) error {
+	err := a.authR.InsertUser(registerDTO, ctx)
 	if err != nil {
-		return user, fmt.Errorf("Register gagal!")
+		return err
 	}
 
-	return user, nil
+	return nil
 }
 
