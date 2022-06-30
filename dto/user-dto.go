@@ -1,6 +1,6 @@
-package models
+package dto
 
-type User struct {
+type UserLogin struct {
 	Id        string `json:"id"`
 	Username  string `json:"username"`
 	Email     string `json:"email"`
@@ -9,4 +9,5 @@ type User struct {
 	RoleId    int8   `json:"role_id"`
 	CreatedAt int64  `json:"created_at"`
 	UpdatedAt int64  `json:"updated_at"`
+	Token     string `json:"token"`
 }

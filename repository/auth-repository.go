@@ -2,7 +2,6 @@ package repository
 
 import (
 	"crud/dto"
-	"crud/models"
 	"crud/sql"
 
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -10,7 +9,7 @@ import (
 )
 
 type AuthR interface {
-	CheckUsername(dto.Login, *fasthttp.RequestCtx) (models.User, error)
+	CheckUsername(dto.Login, *fasthttp.RequestCtx) (dto.UserLogin, error)
 	InsertUser(dto.Register, *fasthttp.RequestCtx) error
 }
 
@@ -24,8 +23,8 @@ func NewAuthR(db *pgxpool.Pool) AuthR {
 	}
 }
 
-func (a *authR) CheckUsername(loginDTO dto.Login, ctx *fasthttp.RequestCtx) (models.User, error) {
-	var user models.User
+func (a *authR) CheckUsername(loginDTO dto.Login, ctx *fasthttp.RequestCtx) (dto.UserLogin, error) {
+	var user dto.UserLogin
 	err := a.db.QueryRow(ctx, sql.Authentication, loginDTO.Username).
 		Scan(&user.Id, &user.Username, &user.Email, &user.Password, &user.Address, &user.RoleId, &user.CreatedAt, &user.UpdatedAt)
 

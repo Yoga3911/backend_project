@@ -2,7 +2,6 @@ package services
 
 import (
 	"crud/dto"
-	"crud/models"
 	"crud/repository"
 	"crud/utils"
 	"fmt"
@@ -14,7 +13,7 @@ import (
 )
 
 type AuthS interface {
-	LoginUser(dto.Login, *fasthttp.RequestCtx) (models.User, error)
+	LoginUser(dto.Login, *fasthttp.RequestCtx) (dto.UserLogin, error)
 	RegisterUser(dto.Register, *fasthttp.RequestCtx) error
 }
 
@@ -30,13 +29,13 @@ func NewAuthS(authR repository.AuthR, jwtS JWTService) AuthS {
 	}
 }
 
-func (a *authS) LoginUser(loginDTO dto.Login, ctx *fasthttp.RequestCtx) (models.User, error) {
+func (a *authS) LoginUser(loginDTO dto.Login, ctx *fasthttp.RequestCtx) (dto.UserLogin, error) {
 	user, err := a.authR.CheckUsername(loginDTO, ctx)
 	if err != nil {
 		if err.Error() == "no rows in result set" {
 			return user, fmt.Errorf("Username atau Password salah!")
 		}
-		
+
 		return user, err
 	}
 

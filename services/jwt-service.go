@@ -1,7 +1,7 @@
 package services
 
 import (
-	"crud/models"
+	"crud/dto"
 	"fmt"
 	"log"
 	"os"
@@ -12,7 +12,7 @@ import (
 )
 
 type JWTService interface {
-	GenerateToken(user models.User) string
+	GenerateToken(user dto.UserLogin) string
 	ValidateToken(token string) (*jwt.Token, error)
 }
 
@@ -42,7 +42,7 @@ func NewJWTService() JWTService {
 	}
 }
 
-func (j *jwtSevice) GenerateToken(user models.User) string {
+func (j *jwtSevice) GenerateToken(user dto.UserLogin) string {
 	claims := jwtCustomClaim{
 		Id:       user.Id,
 		Username: user.Username,

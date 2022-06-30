@@ -30,11 +30,11 @@ func Data(app *fiber.App) {
 	app.Get("/", OK)
 
 	api := app.Group("/api/v1")
-	// Middleware
-
+	
 	api.Post("/auth/login", authC.Login)
 	api.Post("/auth/register", authC.Register)
-
+	
+	// Middleware
 	api.Use(func(c *fiber.Ctx) error {
 		token := c.Get("Authorization")
 		if token == "" {
