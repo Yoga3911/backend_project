@@ -36,6 +36,7 @@ func (a *authS) LoginUser(loginDTO dto.Login, ctx *fasthttp.RequestCtx) (models.
 		if err.Error() == "no rows in result set" {
 			return user, fmt.Errorf("Username atau Password salah!")
 		}
+		
 		return user, err
 	}
 
@@ -55,7 +56,7 @@ func (a *authS) RegisterUser(registerDTO dto.Register, ctx *fasthttp.RequestCtx)
 		return err
 	}
 	registerDTO.Password = hash
-	
+
 	registerDTO.Id = uuid.New().String()
 
 	timeMili := time.Now().UnixMilli()

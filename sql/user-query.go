@@ -1,3 +1,3 @@
 package sql
 
-const GetUser = `SELECT password`
+const GetUserById = `SELECT * FROM users WHERE id = $1`

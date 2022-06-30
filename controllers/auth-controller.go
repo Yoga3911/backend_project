@@ -58,5 +58,5 @@ func (a *authC) Register(c *fiber.Ctx) error {
 		return utils.Response(c, 400, nil, err.Error(), false)
 	}
 
-	return utils.Response(c, 200, nil, "Register berhasil!", true)
+	return utils.Response(c, 201, nil, "Register berhasil!", true)
 }
