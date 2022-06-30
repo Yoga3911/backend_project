@@ -11,12 +11,12 @@ import (
 func Rollback(db *pgxpool.Pool, ctx context.Context) {
 	_, err := db.Exec(ctx, sql.Rollback)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	_, err = db.Exec(ctx, sql.CallRollback)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	log.Println("Rollback success!")

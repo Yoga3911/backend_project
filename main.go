@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	"crud/configs"
 	"crud/routes"
 	"log"
 	"os"
@@ -16,7 +18,18 @@ func main() {
 	routes.Data(app)
 
 	if err := godotenv.Load(); err != nil {
-		log.Fatalln(".env not found")
+		log.Fatal(".env not found")
+	}
+
+	if len(os.Args[1:]) != 0 && os.Getenv("DATABASE_URL") == "" {
+		ctx := context.Background()
+		switch os.Args[1] {
+		case "-m":
+			configs.Migration(routes.DB, ctx)
+		case "-r":
+			configs.Rollback(routes.DB, ctx)
+		}
+		return
 	}
 
 	log.Fatal(app.Listen(":" + os.Getenv("PORT")))

@@ -11,10 +11,11 @@ import (
 )
 
 var (
-	DB *pgxpool.Pool = configs.DatabaseConnection()
+	DB  *pgxpool.Pool       = configs.DatabaseConnection()
+	JWT services.JWTService = services.NewJWTService()
 
 	authR repository.AuthR  = repository.NewAuthR(DB)
-	authS services.AuthS    = services.NewAuthS(authR)
+	authS services.AuthS    = services.NewAuthS(authR, JWT)
 	authC controllers.AuthC = controllers.NewAuthC(authS)
 )
 

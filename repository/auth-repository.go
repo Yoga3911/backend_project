@@ -4,15 +4,13 @@ import (
 	"crud/dto"
 	"crud/models"
 	"crud/sql"
-	"fmt"
-	"strings"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/valyala/fasthttp"
 )
 
 type AuthR interface {
-	CheckUsernamePassword(dto.Login, *fasthttp.RequestCtx) (models.User, error)
+	CheckUsername(dto.Login, *fasthttp.RequestCtx) (models.User, error)
 	InsertUser(dto.Register, *fasthttp.RequestCtx) error
 }
 
@@ -26,22 +24,16 @@ func NewAuthR(db *pgxpool.Pool) AuthR {
 	}
 }
 
-func (a *authR) CheckUsernamePassword(loginDTO dto.Login, ctx *fasthttp.RequestCtx) (models.User, error) {
+func (a *authR) CheckUsername(loginDTO dto.Login, ctx *fasthttp.RequestCtx) (models.User, error) {
 	var user models.User
-	err := a.db.QueryRow(ctx, sql.Authentication, loginDTO.Username, loginDTO.Password).
-		Scan(&user.Id, &user.Username, &user.Email, &user.Password, &user.Address)
+	err := a.db.QueryRow(ctx, sql.Authentication, loginDTO.Username).
+		Scan(&user.Id, &user.Username, &user.Email, &user.Password, &user.Address, &user.RoleId)
 
 	return user, err
 }
 
 func (a *authR) InsertUser(registerDTO dto.Register, ctx *fasthttp.RequestCtx) error {
 	_, err := a.db.Exec(ctx, sql.InsertUser, registerDTO.Username, registerDTO.Email, registerDTO.Password, registerDTO.Address)
-
-	if strings.Contains(err.Error(), "username") {
-		err = fmt.Errorf("Username telah terdaftar!")
-	} else if strings.Contains(err.Error(), "email") {
-		err = fmt.Errorf("Email telah terdaftar!")
-	}
 
 	return err
 }

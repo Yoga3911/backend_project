@@ -11,12 +11,14 @@ import (
 func Migration(db *pgxpool.Pool, ctx context.Context) {
 	_, err := db.Exec(ctx, sql.Migration)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return
 	}
 
 	_, err = db.Exec(ctx, sql.CallMigration)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return
 	}
 
 	log.Println("Migration success!")

@@ -35,18 +35,9 @@ func DatabaseConnection() *pgxpool.Pool {
 	config.MaxConnIdleTime = 5 * time.Minute
 	config.MaxConnLifetime = 60 * time.Minute
 
-	ctx := context.Background()
-	pg, err := pgxpool.ConnectConfig(ctx, config)
+	pg, err := pgxpool.ConnectConfig(context.Background(), config)
 	if err != nil {
 		log.Fatal(err)
-	}
-
-	migration := 0
-	switch migration {
-	case 1:
-		Migration(pg, ctx)
-	case 2:
-		Rollback(pg, ctx)
 	}
 
 	return pg
