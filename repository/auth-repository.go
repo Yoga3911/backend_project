@@ -27,13 +27,13 @@ func NewAuthR(db *pgxpool.Pool) AuthR {
 func (a *authR) CheckUsername(loginDTO dto.Login, ctx *fasthttp.RequestCtx) (models.User, error) {
 	var user models.User
 	err := a.db.QueryRow(ctx, sql.Authentication, loginDTO.Username).
-		Scan(&user.Id, &user.Username, &user.Email, &user.Password, &user.Address, &user.RoleId)
+		Scan(&user.Id, &user.Username, &user.Email, &user.Password, &user.Address, &user.RoleId, &user.CreatedAt, &user.UpdatedAt)
 
 	return user, err
 }
 
 func (a *authR) InsertUser(registerDTO dto.Register, ctx *fasthttp.RequestCtx) error {
-	_, err := a.db.Exec(ctx, sql.InsertUser, registerDTO.Id, registerDTO.Username, registerDTO.Email, registerDTO.Password, registerDTO.Address)
+	_, err := a.db.Exec(ctx, sql.InsertUser, registerDTO.Id, registerDTO.Username, registerDTO.Email, registerDTO.Password, registerDTO.Address, registerDTO.CreatedAt, registerDTO.UpdatedAt)
 
 	return err
 }

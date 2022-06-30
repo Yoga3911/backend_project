@@ -20,6 +20,8 @@ BEGIN
 	password VARCHAR(100),
 	address VARCHAR(50),
 	role_id SMALLINT NOT NULL,
+	created_at BIGINT NOT NULL,
+	updated_at BIGINT NOT NULL,
 	CONSTRAINT fk_role_id FOREIGN KEY (role_id) REFERENCES role(id)
 	);
 
