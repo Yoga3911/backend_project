@@ -31,7 +31,7 @@ func StructValidator(models interface{}) []*Validator {
 }
 
 func InputChecker(data ...string) error {
-	regex, err := regexp.Compile(`([a-zA-Z1-90@. ]+)`)
+	regex, err := regexp.Compile(`([a-zA-Z1-90@.?! ]+)`)
 	if err != nil {
 		return fmt.Errorf("cant compile regex")
 	}
@@ -39,7 +39,7 @@ func InputChecker(data ...string) error {
 	for _, item := range data {
 		result := regex.FindAllString(item, -1)
 		if item != result[0] {
-			return fmt.Errorf("Hanya boleh menggunakan simbol @ dan .")
+			return fmt.Errorf("Hanya boleh menggunakan simbol ?, !, @ dan .")
 		}
 	}
 
