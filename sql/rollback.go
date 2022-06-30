@@ -6,6 +6,8 @@ AS $$
 BEGIN
 	DROP TABLE users;
 	DROP TABLE role;
+	DROP TABLE products;
+	DROP TABLE category;
 END;
 $$;`
 
