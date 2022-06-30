@@ -22,7 +22,7 @@ type jwtSevice struct {
 }
 
 type jwtCustomClaim struct {
-	Id       int    `json:"id"`
+	Id       string `json:"id"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Address  string `json:"address"`

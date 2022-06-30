@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/google/uuid"
 	"github.com/valyala/fasthttp"
 )
 
@@ -50,6 +51,7 @@ func (a *authS) RegisterUser(registerDTO dto.Register, ctx *fasthttp.RequestCtx)
 		return err
 	}
 
+	registerDTO.Id = uuid.New().String()
 	registerDTO.Password = hash
 	err = a.authR.InsertUser(registerDTO, ctx)
 	if err != nil {

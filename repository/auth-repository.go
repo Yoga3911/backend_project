@@ -33,7 +33,7 @@ func (a *authR) CheckUsername(loginDTO dto.Login, ctx *fasthttp.RequestCtx) (mod
 }
 
 func (a *authR) InsertUser(registerDTO dto.Register, ctx *fasthttp.RequestCtx) error {
-	_, err := a.db.Exec(ctx, sql.InsertUser, registerDTO.Username, registerDTO.Email, registerDTO.Password, registerDTO.Address)
+	_, err := a.db.Exec(ctx, sql.InsertUser, registerDTO.Id, registerDTO.Username, registerDTO.Email, registerDTO.Password, registerDTO.Address)
 
 	return err
 }
