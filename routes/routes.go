@@ -48,7 +48,7 @@ func Data(app *fiber.App) {
 
 		return c.Next()
 	})
-
+	
 	api.Get("/user/:id", userC.GetUserById)
 }
 
