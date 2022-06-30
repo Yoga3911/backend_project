@@ -10,7 +10,7 @@ import (
 )
 
 type ProductR interface {
-	GetAllProduct(*fasthttp.RequestCtx, string) ([]*models.Product, error)
+	GetAllProduct(*fasthttp.RequestCtx) ([]*models.Product, error)
 	GetProductById()
 	InsertProduct()
 	EditProduct()
@@ -27,26 +27,25 @@ func NewProductR(db *pgxpool.Pool) ProductR {
 	}
 }
 
-func (p *productR) GetAllProduct(ctx *fasthttp.RequestCtx, productId string) ([]*models.Product, error) {
-	var product []*models.Product
+func (p *productR) GetAllProduct(ctx *fasthttp.RequestCtx) ([]*models.Product, error) {
+	var products []*models.Product
 	pgx, err := p.db.Query(ctx, sql.GetAllProduct)
 	if err != nil {
-		return product, err
+		return products, err
 	}
 
 	for pgx.Next() {
-		var p models.Product
+		var product models.Product
 
-		err = pgx.Scan(&p.Id, &p.Name, &p.Price, &p.Quantity, &p.Description, &p.UserId, &p.CategoryId, &p.CreatedAt, &p.UpdatedAt)
+		err = pgx.Scan(&product.Id, &product.Name, &product.Price, &product.Quantity, &product.Description, &product.UserId, &product.CategoryId, &product.CreatedAt, &product.UpdatedAt)
 		if err != nil {
 			log.Println(err)
 		}
 
-
-		product = append(product, &p)
+		products = append(products, &product)
 	}
 
-	return product, nil
+	return products, nil
 }
 
 func (p *productR) GetProductById() {
