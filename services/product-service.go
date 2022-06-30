@@ -15,7 +15,7 @@ type productS struct {
 	productR repository.ProductR
 }
 
-func NewProductR(productR repository.ProductR) ProductS {
+func NewProductS(productR repository.ProductR) ProductS {
 	return &productS{
 		productR: productR,
 	}

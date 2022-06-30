@@ -15,7 +15,7 @@ type productC struct {
 	productS services.ProductS
 }
 
-func NewProductR(productS services.ProductS) ProductC {
+func NewProductC(productS services.ProductS) ProductC {
 	return &productC{
 		productS: productS,
 	}
