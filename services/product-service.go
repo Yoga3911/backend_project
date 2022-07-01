@@ -16,6 +16,7 @@ type ProductS interface {
 	GetAllProduct(*fasthttp.RequestCtx) ([]*models.Product, error)
 	GetProductById(*fasthttp.RequestCtx, string) (models.Product, error)
 	InsertProduct(*fasthttp.RequestCtx, dto.InsertProduct) (dto.InsertProduct, error)
+	EditProduct(*fasthttp.RequestCtx, dto.EditProduct) (dto.EditProduct, error)
 }
 
 type productS struct {
@@ -68,7 +69,6 @@ func (p *productS) GetProductById(ctx *fasthttp.RequestCtx, productId string) (m
 }
 
 func (p *productS) InsertProduct(ctx *fasthttp.RequestCtx, insertProduct dto.InsertProduct) (dto.InsertProduct, error) {
-	var product dto.InsertProduct
 	insertProduct.Id = uuid.New().String()
 
 	timeMili := time.Now().UnixMilli()
@@ -77,10 +77,19 @@ func (p *productS) InsertProduct(ctx *fasthttp.RequestCtx, insertProduct dto.Ins
 
 	err := p.productR.InsertProduct(ctx, insertProduct)
 	if err != nil {
-		return product, err
+		return insertProduct, err
 	}
 
-	product = insertProduct
+	return insertProduct, nil
+}
 
-	return product, nil
+func (p *productS) EditProduct(ctx *fasthttp.RequestCtx, editProduct dto.EditProduct) (dto.EditProduct, error) {
+	editProduct.UpdatedAt = time.Now().UnixMilli()
+
+	err := p.productR.EditProduct(ctx, editProduct)
+	if err != nil {
+		return editProduct, err
+	}
+
+	return editProduct, nil
 }
