@@ -70,9 +70,9 @@ func (a *authS) RegisterUser(registerDTO dto.Register, ctx *fasthttp.RequestCtx)
 			return fmt.Errorf("Username telah terdaftar!")
 		} else if strings.Contains(err.Error(), "email") {
 			return fmt.Errorf("Email telah terdaftar!")
-		} else {
-			return fmt.Errorf(err.Error())
 		}
+
+		return fmt.Errorf(err.Error())
 	}
 
 	return nil
