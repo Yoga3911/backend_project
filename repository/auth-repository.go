@@ -10,8 +10,8 @@ import (
 )
 
 type AuthR interface {
-	CheckUsername(dto.Login, *fasthttp.RequestCtx) pgx.Row
-	InsertUser(dto.Register, *fasthttp.RequestCtx) error
+	CheckUsername(*fasthttp.RequestCtx, dto.Login) pgx.Row
+	InsertUser(*fasthttp.RequestCtx, dto.Register) error
 }
 
 type authR struct {
@@ -24,11 +24,11 @@ func NewAuthR(db *pgxpool.Pool) AuthR {
 	}
 }
 
-func (a *authR) CheckUsername(loginDTO dto.Login, ctx *fasthttp.RequestCtx) pgx.Row {
+func (a *authR) CheckUsername(ctx *fasthttp.RequestCtx, loginDTO dto.Login) pgx.Row {
 	return a.db.QueryRow(ctx, sql.Authentication, loginDTO.Username)
 }
 
-func (a *authR) InsertUser(registerDTO dto.Register, ctx *fasthttp.RequestCtx) error {
+func (a *authR) InsertUser(ctx *fasthttp.RequestCtx, registerDTO dto.Register) error {
 	_, err := a.db.Exec(ctx, sql.InsertUser, registerDTO.Id, registerDTO.Username, registerDTO.Email, registerDTO.Password, registerDTO.Address, registerDTO.CreatedAt, registerDTO.UpdatedAt)
 
 	return err

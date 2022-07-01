@@ -13,8 +13,8 @@ import (
 )
 
 type AuthS interface {
-	LoginUser(dto.Login, *fasthttp.RequestCtx) (dto.UserLogin, error)
-	RegisterUser(dto.Register, *fasthttp.RequestCtx) error
+	LoginUser(*fasthttp.RequestCtx, dto.Login) (dto.UserLogin, error)
+	RegisterUser(*fasthttp.RequestCtx, dto.Register) error
 }
 
 type authS struct {
@@ -29,10 +29,10 @@ func NewAuthS(authR repository.AuthR, jwtS JWTService) AuthS {
 	}
 }
 
-func (a *authS) LoginUser(loginDTO dto.Login, ctx *fasthttp.RequestCtx) (dto.UserLogin, error) {
+func (a *authS) LoginUser(ctx *fasthttp.RequestCtx, loginDTO dto.Login) (dto.UserLogin, error) {
 	var user dto.UserLogin
 
-	err := a.authR.CheckUsername(loginDTO, ctx).Scan(&user.Id, &user.Username, &user.Email, &user.Password, &user.Address, &user.RoleId, &user.CreatedAt, &user.UpdatedAt)
+	err := a.authR.CheckUsername(ctx, loginDTO).Scan(&user.Id, &user.Username, &user.Email, &user.Password, &user.Address, &user.RoleId, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		if err.Error() == "no rows in result set" {
 			return user, fmt.Errorf("Username atau Password salah!")
@@ -51,7 +51,7 @@ func (a *authS) LoginUser(loginDTO dto.Login, ctx *fasthttp.RequestCtx) (dto.Use
 	return user, nil
 }
 
-func (a *authS) RegisterUser(registerDTO dto.Register, ctx *fasthttp.RequestCtx) error {
+func (a *authS) RegisterUser(ctx *fasthttp.RequestCtx, registerDTO dto.Register) error {
 	hash, err := utils.HashAndSalt(registerDTO.Password)
 	if err != nil {
 		return err
@@ -64,7 +64,7 @@ func (a *authS) RegisterUser(registerDTO dto.Register, ctx *fasthttp.RequestCtx)
 	registerDTO.CreatedAt = timeMili
 	registerDTO.UpdatedAt = timeMili
 
-	err = a.authR.InsertUser(registerDTO, ctx)
+	err = a.authR.InsertUser(ctx, registerDTO)
 	if err != nil {
 		if strings.Contains(err.Error(), "username") {
 			return fmt.Errorf("Username telah terdaftar!")

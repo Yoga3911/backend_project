@@ -31,7 +31,7 @@ func (a *authC) Login(c *fiber.Ctx) error {
 		return utils.Response(c, 400, err, "Anda yang salah!", false)
 	}
 
-	user, err := a.authS.LoginUser(loginData, c.Context())
+	user, err := a.authS.LoginUser(c.Context(), loginData)
 	if err != nil {
 		return utils.Response(c, 400, nil, err.Error(), false)
 	}
@@ -53,7 +53,7 @@ func (a *authC) Register(c *fiber.Ctx) error {
 
 	}
 
-	err = a.authS.RegisterUser(registerData, c.Context())
+	err = a.authS.RegisterUser(c.Context(), registerData)
 	if err != nil {
 		return utils.Response(c, 400, nil, err.Error(), false)
 	}
