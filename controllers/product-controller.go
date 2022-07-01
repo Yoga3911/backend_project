@@ -50,7 +50,7 @@ func (p *productC) InsertProduct(c *fiber.Ctx) error {
 		return utils.Response(c, 400, nil, err.Error(), false)
 	}
 
-	err = p.productS.InsertProduct(c.Context(), product)
+	product, err = p.productS.InsertProduct(c.Context(), product)
 	if err != nil {
 		return utils.Response(c, 400, nil, err.Error(), false)
 	}
