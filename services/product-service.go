@@ -17,7 +17,7 @@ type ProductS interface {
 	GetProductById(*fasthttp.RequestCtx, string) (models.Product, error)
 	InsertProduct(*fasthttp.RequestCtx, dto.InsertProduct) (dto.InsertProduct, error)
 	EditProduct(*fasthttp.RequestCtx, dto.EditProduct) (dto.EditProduct, error)
-	DeleteProduct(*fasthttp.RequestCtx, string) (string, error)
+	DeleteProduct(*fasthttp.RequestCtx, string) error
 }
 
 type productS struct {
@@ -95,11 +95,11 @@ func (p *productS) EditProduct(ctx *fasthttp.RequestCtx, editProduct dto.EditPro
 	return editProduct, nil
 }
 
-func (p *productS) DeleteProduct(ctx *fasthttp.RequestCtx, productId string) (string, error) {
+func (p *productS) DeleteProduct(ctx *fasthttp.RequestCtx, productId string) error {
 	err := p.productR.DeleteProduct(ctx, productId)
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	return productId, nil
+	return nil
 }

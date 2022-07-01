@@ -13,6 +13,7 @@ type ProductC interface {
 	GetProductById(*fiber.Ctx) error
 	InsertProduct(*fiber.Ctx) error
 	EditProduct(*fiber.Ctx) error
+	DeleteProduct(*fiber.Ctx) error
 }
 
 type productC struct {
@@ -81,4 +82,15 @@ func (p *productC) EditProduct(c *fiber.Ctx) error {
 	}
 
 	return utils.Response(c, 200, product, "Edit product success!", true)
+}
+
+func (p *productC) DeleteProduct(c *fiber.Ctx) error {
+	productId := c.Params("productId")
+
+	err := p.productS.DeleteProduct(c.Context(), productId)
+	if err != nil {
+		return utils.Response(c, 400, nil, err.Error(), false)
+	}
+
+	return utils.Response(c, 200, productId, "Delete product success!", true)
 }
