@@ -13,7 +13,7 @@ type ProductR interface {
 	GetAllProduct(*fasthttp.RequestCtx) (pgx.Rows, error)
 	GetProductById(*fasthttp.RequestCtx, string) pgx.Row
 	InsertProduct(*fasthttp.RequestCtx, dto.InsertProduct) error
-	EditProduct()
+	EditProduct(*fasthttp.RequestCtx, dto.EditProduct) error
 	DeleteProduct()
 }
 
@@ -41,8 +41,10 @@ func (p *productR) InsertProduct(ctx *fasthttp.RequestCtx, product dto.InsertPro
 	return err
 }
 
-func (p *productR) EditProduct() {
+func (p *productR) EditProduct(ctx *fasthttp.RequestCtx, product dto.EditProduct) error {
+	_, err := p.db.Exec(ctx, sql.EditProduct, product.Id, product.Name, product.Price, product.Quantity, product.Description, product.CategoryId, product.UpdatedAt)
 
+	return err
 }
 
 func (p *productR) DeleteProduct() {
