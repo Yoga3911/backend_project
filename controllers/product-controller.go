@@ -12,6 +12,7 @@ type ProductC interface {
 	GetAllProduct(*fiber.Ctx) error
 	GetProductById(*fiber.Ctx) error
 	InsertProduct(*fiber.Ctx) error
+	EditProduct(*fiber.Ctx) error
 }
 
 type productC struct {
@@ -56,4 +57,20 @@ func (p *productC) InsertProduct(c *fiber.Ctx) error {
 	}
 
 	return utils.Response(c, 200, product, "Insert product success!", true)
+}
+
+func (p *productC) EditProduct(c *fiber.Ctx) error {
+	var product dto.EditProduct
+
+	err := c.BodyParser(&product)
+	if err != nil {
+		return utils.Response(c, 400, nil, err.Error(), false)
+	}
+
+	product, err = p.productS.EditProduct(c.Context(), product)
+	if err != nil {
+		return utils.Response(c, 400, nil, err.Error(), false)
+	}
+
+	return utils.Response(c, 200, product, "Edit product success!", true)
 }
