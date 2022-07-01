@@ -6,14 +6,16 @@ import (
 	"crud/repository"
 	"fmt"
 	"log"
+	"time"
 
+	"github.com/google/uuid"
 	"github.com/valyala/fasthttp"
 )
 
 type ProductS interface {
 	GetAllProduct(*fasthttp.RequestCtx) ([]*models.Product, error)
 	GetProductById(*fasthttp.RequestCtx, string) (models.Product, error)
-	InsertProduct(*fasthttp.RequestCtx, dto.InsertProduct) (dto.InsertProduct, error)
+	InsertProduct(*fasthttp.RequestCtx, dto.InsertProduct) error
 }
 
 type productS struct {
@@ -65,11 +67,17 @@ func (p *productS) GetProductById(ctx *fasthttp.RequestCtx, productId string) (m
 	return product, nil
 }
 
-func (p *productS) InsertProduct(ctx *fasthttp.RequestCtx, product dto.InsertProduct) (dto.InsertProduct, error) {
-	err := p.productR.InsertProduct(ctx, product)
+func (p *productS) InsertProduct(ctx *fasthttp.RequestCtx, insertProduct dto.InsertProduct) error {
+	insertProduct.Id = uuid.New().String()
+
+	timeMili := time.Now().UnixMilli()
+	insertProduct.CreatedAt = timeMili
+	insertProduct.UpdatedAt = timeMili
+
+	err := p.productR.InsertProduct(ctx, insertProduct)
 	if err != nil {
-		return product, err
+		return err
 	}
 
-	return product, nil
+	return nil
 }
