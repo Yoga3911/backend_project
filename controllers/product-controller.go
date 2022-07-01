@@ -51,6 +51,10 @@ func (p *productC) InsertProduct(c *fiber.Ctx) error {
 		return utils.Response(c, 400, nil, err.Error(), false)
 	}
 
+	if err := utils.StructValidator(product); err != nil {
+		return utils.Response(c, 400, err, "There is something wrong!", false)
+	}
+
 	product, err = p.productS.InsertProduct(c.Context(), product)
 	if err != nil {
 		return utils.Response(c, 400, nil, err.Error(), false)
@@ -65,6 +69,10 @@ func (p *productC) EditProduct(c *fiber.Ctx) error {
 	err := c.BodyParser(&product)
 	if err != nil {
 		return utils.Response(c, 400, nil, err.Error(), false)
+	}
+
+	if err := utils.StructValidator(product); err != nil {
+		return utils.Response(c, 400, err, "There is something wrong!", false)
 	}
 
 	product, err = p.productS.EditProduct(c.Context(), product)

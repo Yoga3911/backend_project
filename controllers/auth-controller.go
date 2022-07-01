@@ -58,7 +58,6 @@ func (a *authC) Register(c *fiber.Ctx) error {
 	err = utils.InputChecker(registerData.Email, registerData.Password, registerData.Username, registerData.Address)
 	if err != nil {
 		return utils.Response(c, 400, nil, err.Error(), false)
-
 	}
 
 	err = a.authS.RegisterUser(c.Context(), registerData)

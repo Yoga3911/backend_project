@@ -57,6 +57,7 @@ func Data(app *fiber.App) {
 
 	api.Get("/user/:id", userC.GetUserById)
 	api.Post("/product", productC.InsertProduct)
+	api.Put("/product", productC.EditProduct)
 }
 
 func OK(c *fiber.Ctx) error {
