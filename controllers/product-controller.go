@@ -9,6 +9,7 @@ import (
 
 type ProductC interface {
 	GetAllProduct(*fiber.Ctx) error
+	GetProductById(*fiber.Ctx) error
 }
 
 type productC struct {
@@ -28,4 +29,13 @@ func (p *productC) GetAllProduct(c *fiber.Ctx) error {
 	}
 
 	return utils.Response(c, 200, products, "Get All product data success!", true)
+}
+
+func (p *productC) GetProductById(c *fiber.Ctx) error {
+	products, err := p.productS.GetProductById(c.Context(), c.Params("productId"))
+	if err != nil {
+		return utils.Response(c, 400, nil, err.Error(), false)
+	}
+
+	return utils.Response(c, 200, products, "Get product data success!", true)
 }

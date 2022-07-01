@@ -4,12 +4,13 @@ import (
 	"crud/dto"
 	"crud/sql"
 
+	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/valyala/fasthttp"
 )
 
 type AuthR interface {
-	CheckUsername(dto.Login, *fasthttp.RequestCtx) (dto.UserLogin, error)
+	CheckUsername(dto.Login, *fasthttp.RequestCtx) pgx.Row
 	InsertUser(dto.Register, *fasthttp.RequestCtx) error
 }
 
@@ -23,12 +24,8 @@ func NewAuthR(db *pgxpool.Pool) AuthR {
 	}
 }
 
-func (a *authR) CheckUsername(loginDTO dto.Login, ctx *fasthttp.RequestCtx) (dto.UserLogin, error) {
-	var user dto.UserLogin
-	err := a.db.QueryRow(ctx, sql.Authentication, loginDTO.Username).
-		Scan(&user.Id, &user.Username, &user.Email, &user.Password, &user.Address, &user.RoleId, &user.CreatedAt, &user.UpdatedAt)
-
-	return user, err
+func (a *authR) CheckUsername(loginDTO dto.Login, ctx *fasthttp.RequestCtx) pgx.Row {
+	return a.db.QueryRow(ctx, sql.Authentication, loginDTO.Username)
 }
 
 func (a *authR) InsertUser(registerDTO dto.Register, ctx *fasthttp.RequestCtx) error {

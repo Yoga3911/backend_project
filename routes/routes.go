@@ -38,6 +38,7 @@ func Data(app *fiber.App) {
 	api.Post("/auth/login", authC.Login)
 	api.Post("/auth/register", authC.Register)
 	api.Get("/product", productC.GetAllProduct)
+	api.Get("/product/:productId", productC.GetProductById)
 
 	// Middleware
 	api.Use(func(c *fiber.Ctx) error {

@@ -23,7 +23,9 @@ func NewUserS(userR repository.UserR) UserS {
 }
 
 func (u *userS) GetUserById(ctx *fasthttp.RequestCtx, userId string) (models.User, error) {
-	user, err := u.userR.GetById(ctx, userId)
+	var user models.User
+
+	err := u.userR.GetById(ctx, userId).Scan(&user.Id, &user.Username, &user.Email, &user.Password, &user.Address, &user.RoleId, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		if err.Error() == "no rows in result set" {
 			return user, fmt.Errorf("User tidak ditemukan!")
