@@ -1,6 +1,7 @@
 package services
 
 import (
+	"crud/dto"
 	"crud/models"
 	"crud/repository"
 	"fmt"
@@ -12,6 +13,7 @@ import (
 type ProductS interface {
 	GetAllProduct(*fasthttp.RequestCtx) ([]*models.Product, error)
 	GetProductById(*fasthttp.RequestCtx, string) (models.Product, error)
+	InsertProduct(*fasthttp.RequestCtx, dto.InsertProduct) (dto.InsertProduct, error)
 }
 
 type productS struct {
@@ -57,6 +59,15 @@ func (p *productS) GetProductById(ctx *fasthttp.RequestCtx, productId string) (m
 			return product, fmt.Errorf("Produk tidak ditemukan!")
 		}
 
+		return product, err
+	}
+
+	return product, nil
+}
+
+func (p *productS) InsertProduct(ctx *fasthttp.RequestCtx, product dto.InsertProduct) (dto.InsertProduct, error) {
+	err := p.productR.InsertProduct(ctx, product)
+	if err != nil {
 		return product, err
 	}
 
