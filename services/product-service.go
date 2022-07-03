@@ -16,6 +16,7 @@ import (
 type ProductS interface {
 	GetAllProduct(*fasthttp.RequestCtx) ([]*models.Product, error)
 	GetProductById(*fasthttp.RequestCtx, string) (models.Product, error)
+	GetProductByCategoryId(*fasthttp.RequestCtx) ([]*models.Product, error)
 	InsertProduct(*fasthttp.RequestCtx, dto.InsertProduct) (dto.InsertProduct, error)
 	EditProduct(*fasthttp.RequestCtx, dto.EditProduct) (dto.EditProduct, error)
 	DeleteProduct(*fasthttp.RequestCtx, dto.DeleteProduct) error
@@ -68,6 +69,28 @@ func (p *productS) GetProductById(ctx *fasthttp.RequestCtx, productId string) (m
 	}
 
 	return product, nil
+}
+
+func (p *productS) GetProductByCategoryId(ctx *fasthttp.RequestCtx) ([]*models.Product, error) {
+	var products []*models.Product
+
+	data, err := p.productR.GetAllProduct(ctx)
+	if err != nil {
+		return products, err
+	}
+
+	for data.Next() {
+		var product models.Product
+
+		err = data.Scan(&product.Id, &product.Name, &product.Price, &product.Quantity, &product.Description, &product.UserId, &product.CategoryId, &product.IsDeleted, &product.CreatedAt, &product.UpdatedAt)
+		if err != nil {
+			log.Println(err)
+		}
+
+		products = append(products, &product)
+	}
+
+	return products, nil
 }
 
 func (p *productS) InsertProduct(ctx *fasthttp.RequestCtx, insertProduct dto.InsertProduct) (dto.InsertProduct, error) {
