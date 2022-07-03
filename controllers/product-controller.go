@@ -11,6 +11,7 @@ import (
 type ProductC interface {
 	GetAllProduct(*fiber.Ctx) error
 	GetProductById(*fiber.Ctx) error
+	GetProductByCategoryId(*fiber.Ctx) error
 	InsertProduct(*fiber.Ctx) error
 	EditProduct(*fiber.Ctx) error
 	DeleteProduct(*fiber.Ctx) error
@@ -42,6 +43,15 @@ func (p *productC) GetProductById(c *fiber.Ctx) error {
 	}
 
 	return utils.Response(c, 200, products, "Get product data success!", true)
+}
+
+func (p *productC) GetProductByCategoryId(c *fiber.Ctx) error {
+	products, err := p.productS.GetAllProduct(c.Context())
+	if err != nil {
+		return utils.Response(c, 400, nil, "Get All product data failed!", false)
+	}
+
+	return utils.Response(c, 200, products, "Get All product data success!", true)
 }
 
 func (p *productC) InsertProduct(c *fiber.Ctx) error {
