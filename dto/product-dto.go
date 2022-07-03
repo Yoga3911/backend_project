@@ -1,5 +1,9 @@
 package dto
 
+type GetByCategory struct {
+	Id string `query:"categoryId"`
+}
+
 type InsertProduct struct {
 	Id          string `json:"id"`
 	Name        string `json:"name" validate:"required"`
