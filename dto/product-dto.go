@@ -8,6 +8,7 @@ type InsertProduct struct {
 	Description string `json:"description" validate:"required"`
 	UserId      string `json:"user_id" validate:"required"`
 	CategoryId  int8   `json:"category_id" validate:"required"`
+	IsDeleted   bool   `json:"is_deleted"`
 	CreatedAt   int64  `json:"created_at"`
 	UpdatedAt   int64  `json:"updated_at"`
 }
@@ -18,6 +19,13 @@ type EditProduct struct {
 	Price       int    `json:"price" validate:"required"`
 	Quantity    int    `json:"quantity" validate:"required"`
 	Description string `json:"description" validate:"required"`
+	UserId      string `json:"user_id" validate:"required"`
 	CategoryId  int8   `json:"category_id" validate:"required"`
 	UpdatedAt   int64  `json:"updated_at"`
+}
+
+type DeleteProduct struct {
+	ProductId string `json:"product_id" validate:"required"`
+	UserId    string `json:"user_id" validate:"required"`
+	UpdatedAt int64  `json:"updated_at"`
 }

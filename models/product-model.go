@@ -8,6 +8,7 @@ type Product struct {
 	Description string `json:"description"`
 	UserId      string `json:"user_id"`
 	CategoryId  int8   `json:"category_id"`
+	IsDeleted   bool   `json:"is_deleted"`
 	CreatedAt   int64  `json:"created_at"`
 	UpdatedAt   int64  `json:"updated_at"`
 }

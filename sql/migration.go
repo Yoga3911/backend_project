@@ -48,6 +48,7 @@ BEGIN
 		description TEXT NOT NULL,
 		user_id VARCHAR(50) NOT NULL,
 		category_id INT NOT NULL,
+		is_deleted BOOLEAN NOT NULL,
 		created_at BIGINT NOT NULL,
 		updated_at BIGINT NOT NULL,
 		CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id),

@@ -6,6 +6,7 @@ import (
 	"crud/repository"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -17,7 +18,7 @@ type ProductS interface {
 	GetProductById(*fasthttp.RequestCtx, string) (models.Product, error)
 	InsertProduct(*fasthttp.RequestCtx, dto.InsertProduct) (dto.InsertProduct, error)
 	EditProduct(*fasthttp.RequestCtx, dto.EditProduct) (dto.EditProduct, error)
-	DeleteProduct(*fasthttp.RequestCtx, string) error
+	DeleteProduct(*fasthttp.RequestCtx, dto.DeleteProduct) error
 }
 
 type productS struct {
@@ -41,7 +42,7 @@ func (p *productS) GetAllProduct(ctx *fasthttp.RequestCtx) ([]*models.Product, e
 	for data.Next() {
 		var product models.Product
 
-		err = data.Scan(&product.Id, &product.Name, &product.Price, &product.Quantity, &product.Description, &product.UserId, &product.CategoryId, &product.CreatedAt, &product.UpdatedAt)
+		err = data.Scan(&product.Id, &product.Name, &product.Price, &product.Quantity, &product.Description, &product.UserId, &product.CategoryId, &product.IsDeleted, &product.CreatedAt, &product.UpdatedAt)
 		if err != nil {
 			log.Println(err)
 		}
@@ -56,7 +57,7 @@ func (p *productS) GetProductById(ctx *fasthttp.RequestCtx, productId string) (m
 	var product models.Product
 
 	err := p.productR.GetProductById(ctx, productId).
-		Scan(&product.Id, &product.Name, &product.Price, &product.Quantity, &product.Description, &product.UserId, &product.CategoryId, &product.CreatedAt, &product.UpdatedAt)
+		Scan(&product.Id, &product.Name, &product.Price, &product.Quantity, &product.Description, &product.UserId, &product.CategoryId, &product.IsDeleted, &product.CreatedAt, &product.UpdatedAt)
 
 	if err != nil {
 		if err.Error() == "no rows in result set" {
@@ -78,6 +79,10 @@ func (p *productS) InsertProduct(ctx *fasthttp.RequestCtx, insertProduct dto.Ins
 
 	err := p.productR.InsertProduct(ctx, insertProduct)
 	if err != nil {
+		if strings.Contains(err.Error(), "fk_user_id") {
+			return insertProduct, fmt.Errorf("Invalid user")
+		}
+
 		return insertProduct, err
 	}
 
@@ -86,7 +91,7 @@ func (p *productS) InsertProduct(ctx *fasthttp.RequestCtx, insertProduct dto.Ins
 
 func (p *productS) EditProduct(ctx *fasthttp.RequestCtx, editProduct dto.EditProduct) (dto.EditProduct, error) {
 	editProduct.UpdatedAt = time.Now().UnixMilli()
-
+	
 	err := p.productR.EditProduct(ctx, editProduct)
 	if err != nil {
 		return editProduct, err
@@ -95,8 +100,10 @@ func (p *productS) EditProduct(ctx *fasthttp.RequestCtx, editProduct dto.EditPro
 	return editProduct, nil
 }
 
-func (p *productS) DeleteProduct(ctx *fasthttp.RequestCtx, productId string) error {
-	err := p.productR.DeleteProduct(ctx, productId)
+func (p *productS) DeleteProduct(ctx *fasthttp.RequestCtx, deleteProduct dto.DeleteProduct) error {
+	deleteProduct.UpdatedAt = time.Now().UnixMilli()
+
+	err := p.productR.DeleteProduct(ctx, deleteProduct)
 	if err != nil {
 		return err
 	}

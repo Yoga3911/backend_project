@@ -9,6 +9,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
@@ -40,7 +41,7 @@ func Data(app *fiber.App) {
 	api.Get("/product", productC.GetAllProduct)
 	api.Get("/product/:productId", productC.GetProductById)
 
-	// Middleware
+	// Middleware - Check Token
 	api.Use(func(c *fiber.Ctx) error {
 		token := c.Get("Authorization")
 		if token == "" {
@@ -56,9 +57,24 @@ func Data(app *fiber.App) {
 	})
 
 	api.Get("/user/:id", userC.GetUserById)
+
+	// Middleware - Check Token
+	api.Use(func(c *fiber.Ctx) error {
+		token := c.Get("Authorization")
+		t, _ := JWT.ValidateToken(token)
+
+		claims := t.Claims.(jwt.MapClaims)
+
+		if (claims["role_id"]) == float64(2) {
+			return c.Next()
+		}
+
+		return utils.Response(c, 403, nil, "You are not a seller!", false)
+	})
+
 	api.Post("/product", productC.InsertProduct)
 	api.Put("/product", productC.EditProduct)
-	api.Delete("/product/:productId", productC.DeleteProduct)
+	api.Delete("/product", productC.DeleteProduct)
 }
 
 func OK(c *fiber.Ctx) error {

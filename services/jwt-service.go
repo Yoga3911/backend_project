@@ -22,7 +22,6 @@ type jwtSevice struct {
 }
 
 type jwtCustomClaim struct {
-	Id       string `json:"id"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Address  string `json:"address"`
@@ -44,7 +43,6 @@ func NewJWTService() JWTService {
 
 func (j *jwtSevice) GenerateToken(user dto.UserLogin) string {
 	claims := jwtCustomClaim{
-		Id:       user.Id,
 		Username: user.Username,
 		Email:    user.Email,
 		Address:  user.Address,
