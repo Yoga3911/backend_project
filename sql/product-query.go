@@ -4,6 +4,8 @@ const GetAllProduct = `SELECT * FROM products WHERE is_deleted = false`
 
 const GetProductById = `SELECT * FROM products WHERE id = $1`
 
+const GetProductByCategoryId = `SELECT * FROM products WHERE category_id = $1`
+
 const InsertProduct = `INSERT INTO products (id, name, price, quantity, description, user_id, category_id, is_deleted, created_at, updated_at) 
 						VALUES ($1, $2, $3, $4, $5, $6, $7, false, $8, $9)`
 
