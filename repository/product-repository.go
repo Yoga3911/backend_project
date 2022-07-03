@@ -12,6 +12,7 @@ import (
 type ProductR interface {
 	GetAllProduct(*fasthttp.RequestCtx) (pgx.Rows, error)
 	GetProductById(*fasthttp.RequestCtx, string) pgx.Row
+	GetProductByCategoryId(*fasthttp.RequestCtx, string) (pgx.Rows, error)
 	InsertProduct(*fasthttp.RequestCtx, dto.InsertProduct) error
 	EditProduct(*fasthttp.RequestCtx, dto.EditProduct) error
 	DeleteProduct(*fasthttp.RequestCtx, dto.DeleteProduct) error
@@ -33,6 +34,10 @@ func (p *productR) GetAllProduct(ctx *fasthttp.RequestCtx) (pgx.Rows, error) {
 
 func (p *productR) GetProductById(ctx *fasthttp.RequestCtx, productId string) pgx.Row {
 	return p.db.QueryRow(ctx, sql.GetProductById, productId)
+}
+
+func (p *productR) GetProductByCategoryId(ctx *fasthttp.RequestCtx, categoryId string) (pgx.Rows, error) {
+	return p.db.Query(ctx, sql.GetProductByCategoryId, categoryId)
 }
 
 func (p *productR) InsertProduct(ctx *fasthttp.RequestCtx, product dto.InsertProduct) error {
