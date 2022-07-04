@@ -17,6 +17,8 @@ var (
 	DB  *pgxpool.Pool       = configs.DatabaseConnection()
 	JWT services.JWTService = services.NewJWTService()
 
+	Firebase services.Storage = services.NewStorage()
+
 	authR repository.AuthR  = repository.NewAuthR(DB)
 	authS services.AuthS    = services.NewAuthS(authR, JWT)
 	authC controllers.AuthC = controllers.NewAuthC(authS)
@@ -28,6 +30,8 @@ var (
 	productR repository.ProductR  = repository.NewProductR(DB)
 	productS services.ProductS    = services.NewProductS(productR)
 	productC controllers.ProductC = controllers.NewProductC(productS)
+
+	fileC controllers.FileC = controllers.NewFileC(Firebase)
 )
 
 func Data(app *fiber.App) {
@@ -40,6 +44,7 @@ func Data(app *fiber.App) {
 	api.Post("/auth/register", authC.Register)
 	api.Get("/product", productC.GetAllProduct)
 	api.Get("/product/:productId", productC.GetProductById)
+	api.Post("/image/upload", fileC.Upload)
 
 	// Middleware - Check Token
 	api.Use(func(c *fiber.Ctx) error {
