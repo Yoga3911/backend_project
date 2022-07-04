@@ -13,7 +13,7 @@ import (
 
 func DatabaseConnection() *pgxpool.Pool {
 	if err := godotenv.Load(); err != nil {
-		log.Fatal(".env file not found!")
+		log.Println(".env file not found!")
 	}
 
 	dsn := "prod"

@@ -18,7 +18,7 @@ func main() {
 	routes.Data(app)
 
 	if err := godotenv.Load(); err != nil {
-		log.Fatal(".env not found")
+		log.Println(".env not found")
 	}
 
 	if len(os.Args[1:]) != 0 {
