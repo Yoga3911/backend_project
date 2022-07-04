@@ -21,7 +21,7 @@ func main() {
 		log.Fatal(".env not found")
 	}
 
-	if len(os.Args[1:]) != 0 && os.Getenv("DATABASE_URL") == "" {
+	if len(os.Args[1:]) != 0 {
 		ctx := context.Background()
 		switch os.Args[1] {
 		case "-m":
