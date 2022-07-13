@@ -6,11 +6,14 @@ import (
 	"crud/repository"
 	"crud/services"
 	"crud/utils"
+	"log"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/joho/godotenv"
 )
 
 var (
@@ -45,6 +48,25 @@ func Data(app *fiber.App) {
 	api.Get("/product", productC.GetAllProduct)
 	api.Get("/product/:productId", productC.GetProductById)
 	api.Post("/image/upload", fileC.Upload)
+
+	// API KEY
+	api.Use(func(c *fiber.Ctx) error {
+		err := godotenv.Load()
+		if err != nil {
+			log.Println(err)
+		}
+
+		key := c.Get("API-KEY")
+		if key == "" {
+			return utils.Response(c, 401, nil, "API KEY tidak ditemukan", false)
+		}
+
+		if key != os.Getenv("API_KEY") {
+			return utils.Response(c, 401, nil, "API KEY tidak sesuai", false)
+		}
+
+		return c.Next()
+	})
 
 	// Middleware - Check Token
 	api.Use(func(c *fiber.Ctx) error {
