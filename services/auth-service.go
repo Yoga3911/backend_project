@@ -4,6 +4,7 @@ import (
 	"crud/dto"
 	"crud/repository"
 	"crud/utils"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -35,7 +36,7 @@ func (a *authS) LoginUser(ctx *fasthttp.RequestCtx, loginDTO dto.Login) (dto.Use
 	err := a.authR.CheckUsername(ctx, loginDTO).Scan(&user.Id, &user.Username, &user.Email, &user.Password, &user.Address, &user.RoleId, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		if err.Error() == "no rows in result set" {
-			return user, fmt.Errorf("Username atau Password salah!")
+			return user, errors.New("username atau password salah")
 		}
 
 		return user, err
@@ -43,7 +44,7 @@ func (a *authS) LoginUser(ctx *fasthttp.RequestCtx, loginDTO dto.Login) (dto.Use
 
 	err = utils.ComparePassword(loginDTO.Password, user.Password)
 	if err != nil {
-		return user, fmt.Errorf("Username atau Password salah!")
+		return user, errors.New("username atau password salah")
 	}
 
 	user.Token = a.jwtS.GenerateToken(user)
@@ -67,9 +68,9 @@ func (a *authS) RegisterUser(ctx *fasthttp.RequestCtx, registerDTO dto.Register)
 	err = a.authR.InsertUser(ctx, registerDTO)
 	if err != nil {
 		if strings.Contains(err.Error(), "username") {
-			return fmt.Errorf("Username telah terdaftar!")
+			return errors.New("username telah terdaftar")
 		} else if strings.Contains(err.Error(), "email") {
-			return fmt.Errorf("Email telah terdaftar!")
+			return errors.New("email telah terdaftar")
 		}
 
 		return fmt.Errorf(err.Error())

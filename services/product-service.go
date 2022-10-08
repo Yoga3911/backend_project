@@ -4,7 +4,7 @@ import (
 	"crud/dto"
 	"crud/models"
 	"crud/repository"
-	"fmt"
+	"errors"
 	"log"
 	"strings"
 	"time"
@@ -62,7 +62,7 @@ func (p *productS) GetProductById(ctx *fasthttp.RequestCtx, productId string) (m
 
 	if err != nil {
 		if err.Error() == "no rows in result set" {
-			return product, fmt.Errorf("Produk tidak ditemukan!")
+			return product, errors.New("produk tidak ditemukan")
 		}
 
 		return product, err
@@ -103,7 +103,7 @@ func (p *productS) InsertProduct(ctx *fasthttp.RequestCtx, insertProduct dto.Ins
 	err := p.productR.InsertProduct(ctx, insertProduct)
 	if err != nil {
 		if strings.Contains(err.Error(), "fk_user_id") {
-			return insertProduct, fmt.Errorf("Invalid user")
+			return insertProduct, errors.New("invalid user")
 		}
 
 		return insertProduct, err

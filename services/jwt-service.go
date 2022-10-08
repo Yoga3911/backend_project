@@ -22,11 +22,12 @@ type jwtSevice struct {
 }
 
 type jwtCustomClaim struct {
+	Id       string `json:"id"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Address  string `json:"address"`
 	RoleId   int8   `json:"role_id"`
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 func NewJWTService() JWTService {
@@ -43,14 +44,19 @@ func NewJWTService() JWTService {
 
 func (j *jwtSevice) GenerateToken(user dto.UserLogin) string {
 	claims := jwtCustomClaim{
+		Id:       user.Id,
 		Username: user.Username,
 		Email:    user.Email,
 		Address:  user.Address,
 		RoleId:   user.RoleId,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().AddDate(0, 0, 1).Unix(),
-			Issuer:    j.issuer,
-			IssuedAt:  time.Now().Unix(),
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: &jwt.NumericDate{
+				Time: time.Now().AddDate(0, 0, 1),
+			},
+			Issuer: j.issuer,
+			IssuedAt: &jwt.NumericDate{
+				Time: time.Now(),
+			},
 		},
 	}
 

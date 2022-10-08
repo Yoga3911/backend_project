@@ -43,10 +43,6 @@ func Data(app *fiber.App) {
 
 	api := app.Group("/api/v1")
 
-	api.Post("/auth/login", authC.Login)
-	api.Post("/auth/register", authC.Register)
-	api.Get("/product", productC.GetAllProduct)
-	api.Get("/product/:productId", productC.GetProductById)
 	api.Post("/image/upload", fileC.Upload)
 
 	// API KEY
@@ -67,6 +63,11 @@ func Data(app *fiber.App) {
 
 		return c.Next()
 	})
+
+	api.Post("/auth/login", authC.Login)
+	api.Post("/auth/register", authC.Register)
+	api.Get("/product", productC.GetAllProduct)
+	api.Get("/product/:productId", productC.GetProductById)
 
 	// Middleware - Check Token
 	api.Use(func(c *fiber.Ctx) error {

@@ -3,7 +3,7 @@ package services
 import (
 	"crud/models"
 	"crud/repository"
-	"fmt"
+	"errors"
 
 	"github.com/valyala/fasthttp"
 )
@@ -28,7 +28,7 @@ func (u *userS) GetUserById(ctx *fasthttp.RequestCtx, userId string) (models.Use
 	err := u.userR.GetById(ctx, userId).Scan(&user.Id, &user.Username, &user.Email, &user.Password, &user.Address, &user.RoleId, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		if err.Error() == "no rows in result set" {
-			return user, fmt.Errorf("User tidak ditemukan!")
+			return user, errors.New("user tidak ditemukan")
 		}
 
 		return user, err
